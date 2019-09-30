@@ -1,10 +1,21 @@
 #!/usr/bin/env bash
 
 # queue up all freesurfer runs
+# - uses regexp to extract subject from a pattern glob
+# - checks subj isn't already complete or in queue
+# - submits jobs to queue with approp. log file and ENV set for subject
+
+# arg:
+#  ./run.bash [cog|7t]
+#   where cog or 7t is the study
+#   (sets SUBJECTS_DIR and where subjlist is)
+#
+# ENV options 
+#     DO_INCOMPLETE="yes" ./run.bash # check for 'finished without error' in log file
+#     DRYRUN=1 ./run.bash  # dont actually submit jobs
 
 # eventaull runs e.g.
-# SUBJ=10124_20060803 DRYRUN=1 bash fs_batch_cmd_cog.bash
-# DO_INCOMPLETE="yes" DRYRUN=1 bash fs_batch_cmd_cog.bash
+#   SUBJ=10124_20060803 DRYRUN=1 bash fs_batch_cmd_cog.bash
 
 # 20190923 - add study to options
 [ -z "$1" ] && study="7t" || study="$1"
