@@ -21,7 +21,7 @@ if [ -d $SUBJECTS_DIR/$SUBJ ]; then
      echo "$SUBJ: have $SUBJECTS_DIR/$SUBJ "
      echo "WARNING: i dont know if this works!!!"
      echo "         remove $SUBJECTS_DIR/$SUBJ to restart instead"
-     cmd="recon-all  -all -s $SUBJ -no-isrunning -make autorecon3"
+     cmd="recon-all  -all -s $SUBJ -no-isrunning -make all"
 else
      cmd="recon-all  -all -s $SUBJ -i  $inputfile"
 fi

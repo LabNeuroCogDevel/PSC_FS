@@ -4,12 +4,13 @@
 
 # eventaull runs e.g.
 # SUBJ=10124_20060803 DRYRUN=1 bash fs_batch_cmd_cog.bash
+# DO_INCOMPLETE="yes" DRYRUN=1 bash fs_batch_cmd_cog.bash
 
 # 20190923 - add study to options
 [ -z "$1" ] && study="7t" || study="$1"
 case $study in 
   7t)
-	subjlist=scratch/T1/sub-*/
+	subjlist=scratch/T1/sub-*/*/anat/*.nii.gz
 	export SUBJECTS_DIR=$SCRATCH/FS
         batch_script=fs_batch_cmd.bash
 	;;
@@ -25,12 +26,16 @@ esac
 
 for sub_dir in $subjlist; do 
    # get just the final directory, take out sub- part
+   [[ $sub_dir =~ sub-([0-9]{5})/([0-9]{8}) ]] &&
+     sub_dir=${BASH_REMATCH[1]}_${BASH_REMATCH[2]}
    export SUBJ=$(basename ${sub_dir/sub-/} .nii.gz)
+
    # define where to save the logs
    logfile=$SCRATCH/log/log-$SUBJ.txt
 
    # does the directory exist already?
-   [ -d $SUBJECTS_DIR/$SUBJ ] && echo "$SUBJECTS_DIR/$SUBJ exists" && continue
+   [ -d $SUBJECTS_DIR/$SUBJ -a -z "$DO_INCOMPLETE" ] && echo "$SUBJECTS_DIR/$SUBJ exists" && continue
+   grep finished\ without\ error  $SUBJECTS_DIR/$SUBJ/scripts/recon-all.log >/dev/null && echo "$SUBJECTS_DIR/$SUBJ finished" && continue
 
    # check that subject doesn't already exist
    # squeue -A $(id -gn) # find name switch
