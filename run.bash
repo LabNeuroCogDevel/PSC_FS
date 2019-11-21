@@ -19,6 +19,10 @@
 
 # 20190923 - add study to options
 [ -z "$1" ] && study="7t" || study="$1"
+
+export SCRATCH=$(readlink -f scratch) 
+#[[ $localscratch != $SCRATCH ]] && echo "SCRATCH!=~/scratch $SCRATCH != $localscratch" && exit 1
+
 case $study in 
   7t)
 	subjlist=scratch/T1/sub-*/*/anat/*.nii.gz
@@ -42,7 +46,7 @@ for sub_dir in $subjlist; do
    export SUBJ=$(basename ${sub_dir/sub-/} .nii.gz)
 
    # define where to save the logs
-   logfile=$SCRATCH/log/log-$SUBJ.txt
+   logfile=scratch/log/log-$SUBJ.txt
 
    # does the directory exist already?
    [ -d $SUBJECTS_DIR/$SUBJ -a -z "$DO_INCOMPLETE" ] && echo "$SUBJECTS_DIR/$SUBJ exists" && continue
